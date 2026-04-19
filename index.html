@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>claustrophobia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Courier Prime', monospace;
+      background-color: #e8dfc8;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      min-height: 100vh;
+      color: #1a1510;
+    }
+
+    #cover {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 4rem 3rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .cover-title {
+      font-size: 18px;
+      color: #1a1510;
+      letter-spacing: 0.03em;
+      margin-bottom: 2.5rem;
+    }
+
+    .cover-image-placeholder {
+      width: 100%;
+      max-width: 480px;
+      height: 320px;
+      border: 1px dashed #b0a090;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b0a090;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    #index {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 4rem 3rem;
+    }
+
+    .poem-list { list-style: none; }
+    .poem-item { padding: 9px 0; }
+    .poem-item a {
+      font-size: 18px;
+      color: #1a1510;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+    .poem-item a:hover { opacity: 0.45; }
+
+    #poem-view { display: none; padding: 3rem 3rem 5rem; min-height: 100vh; }
+
+    .back-link {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: #7a6f5e;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-bottom: 3.5rem;
+      display: inline-block;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #1a1510; }
+
+    .poem-body {
+      font-size: 18px;
+      line-height: 2.1;
+      color: #1a1510;
+      max-width: 560px;
+      white-space: pre-wrap;
+    }
+    .poem-body em { font-style: italic; }
+
+    .stanza { margin-bottom: 1.8em; }
+    .stanza p { margin: 0; line-height: 2.1; }
+    .couplet { margin-bottom: 1.2em; }
+    .couplet p { margin: 0; line-height: 2.1; }
+
+    .poem-body a {
+      color: #1a1510;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .poem-body a:hover { opacity: 0.55; }
+  </style>
+</head>
+<body>
+
+  <div id="cover" onclick="showIndex()">
+    <div class="cover-title">claustrophobia</div>
+    <div class="cover-image-placeholder">image</div>
+    <!-- Replace div above with your cover image once uploaded:
+         <img src="your-cover-image.jpg" style="max-width:480px;width:100%;" alt="cover"> -->
+  </div>
+
+  <div id="index">
+    <ul class="poem-list" id="poem-list"></ul>
+  </div>
+
+  <div id="poem-view">
+    <div class="back-link" onclick="showIndex()">← back</div>
+    <div class="poem-body" id="pv-body"></div>
+  </div>
+
+  <script>
+    const midlandTexas = `<div class="couplet"><p>The <a href="men.jpg" target="_blank">men</a> leave nothing</p><p>but glass-rings on tables</p></div><div class="couplet"><p>and the girls trade their names</p><p>for any sweeter sound:</p></div><div class="couplet"><p><em>My darling. My hummingbird.</em></p><p><em>My Lady-of-the-Fossils.</em></p></div><div class="couplet"><p>We know what happens next:</p><p>the tights torn open, the dark elation</p></div><div class="couplet"><p>blooming in my chest</p><p>as you drive me home,</p></div><div class="couplet"><p>shadows gliding</p><p>down the dashboard</p></div><div class="couplet"><p>and your hand in my lap</p><p>like a large, dormant spider.</p></div><div class="couplet"><p>Morning blisters.</p><p>The pumpjacks lash their tails</p></div><div class="couplet"><p>and billboards erupt from the desert</p><p>like new teeth from the gum.</p></div><div class="couplet"><p>The <a href="men.jpg" target="_blank">men</a> file back to the wells</p><p>in their slow, even stupor,</p></div><div class="couplet"><p>while somewhere a girl</p><p>holds a rag to her temple,</p></div><div class="couplet"><p>her scalp struck open</p><p>like something precious found.</p></div>`;
+
+    const dui = `<div class="stanza"><p>I remember how we laid awake at night,</p><p>waiting for the sprinkler to shut off</p><p>so we could sneak out and steal my father's car.</p></div><div class="stanza"><p>You brought bottles every time.</p><p>In silence we passed belts of whiskey</p><p>between us like glances.</p></div><div class="stanza"><p>I remember that time we got so drunk</p><p>we thought you hit a deer, but it was just a tire</p><p>someone left in the middle of the road.</p></div><div class="stanza"><p>We smoked until our bodies glowed.</p><p>You dropped cherries out the window</p><p>and from the side mirror I watched them</p><p>drift down the highway 'til they slipped</p><p>into a sleeve of darkness…</p></div><div class="stanza"><p>Later you insisted you did hit a deer</p><p>and I got the <a href="crashreport.pdf" target="_blank">story</a> wrong.</p></div><div class="stanza"><p>I stayed in the car, you said,</p><p>missed the blood and guts</p><p>as you hauled the deer's body</p><p>into a ditch stained by dark branches.</p><p>You said I was too scared to look.</p></div><div class="stanza"><p>Maybe one day I'll come back</p><p>to everything I'm trying to forget</p><p>but from the opposite direction,</p><p>like crossing a county line on the way home.</p></div><div class="stanza"><p>Maybe one day I'll walk back</p><p>into the house you used to live in</p><p>and you'll be there, arms open</p><p>like mounted antlers on a dining room wall.</p></div>`;
+
+    const cicadas = `<div class="stanza"><p>It was the weekend before college,</p><p>the weekend Jim parked a monobloc</p><p>in his front lawn and lit a <a href="https://abc13.com/post/man-dead-suspicious-death-in-west-houston-found-burning-alive-after-fire/13765005/" target="_blank">match</a>.</p><p>We couldn't believe it. All that was left of him</p><p>was a circumference of charred grass</p><p>like a giant cigarette burn he crawled through.</p></div><div class="stanza"><p>The cicadas were all but gone by then,</p><p>but we looked for them anyways,</p><p>combing cul-de-sacs for mottled shells</p><p>to press between our palms.</p><p>As there as they are long-gone.</p><p>I couldn't find a live one, but you did,</p><p>and we put it, shrieking, into a plastic cup</p><p>and punched air holes with silver pencils.</p></div><div class="stanza"><p>That night,</p><p>we laid out on the trampoline,</p><p>elbows bent together like burrs.</p><p>The backyard was dark</p><p>and sheared with shadows.</p><p>We talked about Jim, about boredom,</p><p>about the cicada left for dead on the windowsill,</p><p>about how this was the last summer</p><p>anyone could call us 'kids'.</p><p>You were smoking a cigarette</p><p>and I watched you exhale</p><p>in short, serrated breaths.</p><p>And looking up into the darkness,</p><p>I thought the stars looked like holes</p><p>poked through the top of the sky –</p><p>just enough for us to breathe.</p></div>`;
+
+    const fondren = `<div class="stanza"><p>you point out old street corners</p><p>where you used to score <em>there,</em></p><p>and <em>there,</em> and <em>there,</em> the alleyways</p><p>and abandoned houses</p><p>where you hunted for copper pipes</p><p>with your dead best friend.</p><p>I can feel your old world</p><p>running under this one</p><p>like a radio station</p><p>trying to catch a hit of music</p><p>beneath the static…</p></div><div class="stanza"><p>We're both laughing now,</p><p>and you're telling me a story</p><p>about one of your old hookers</p><p>or a car you stole in San Antonio</p><p>or why a man like you can't trust</p><p>his own shadow not to hurt him.</p><p>There's a song cutting in and out</p><p>of the stereo, a smile still spraying</p><p>from your lips when suddenly you say -</p></div><div class="stanza"><p><em>Why are you laughing at me?</em></p><p>I say, <em>Um...what?</em></p><p>You stare at me, hands shaking.</p><p><em>You're fucking laughing at me.</em></p><p>A pause. <em>You're gonna rob me, aren't you?</em></p><p>I know you're not here anymore</p><p>but somewhere in that other world.</p></div><div class="stanza"><p>I wish I could reach across the driver's seat</p><p>and pull you out of whatever <a href="day.png" target="_blank">day</a></p><p>you're living in, years ago,</p><p>easy as a sharp turn or switch of the dial.</p><p>But all I can say is, <em>I don't want to hurt you.</em></p></div><div class="stanza"><p><em>Fuck you. I know what you are.</em></p><p>Your voice is louder now.</p><p><em>You're a fucking whore and I'll</em></p><p><em>crash this car right now</em></p><p><em>unless you tell me what the fuck</em></p><p><em>you're going to do to me.</em></p></div><div class="stanza"><p>Well. I don't know what else to say.</p><p>I want to tell you that I love you</p><p>but my words mean nothing</p><p>when the love you've known</p><p>is the kind you only find</p><p>in back seats or borrowed beds.</p></div>`;
+
+    const poems = [
+      { title: "chopped and screwed", body: `Days spent staking out parking lots
+and wandering high down hallways
+of megachurches, always waiting
+for something to <em>happen,</em> two teenagers
+trailed by dense petrochemical halos,
+sliding down backstreets studded
+with strip malls and convenience stores
+and the muddy mouths of bayous.
+In the evenings, we took turns
+blasting crack from a pipe
+while the <a href="powerlines.jpg" target="_blank">power lines</a> stood sentry
+in the field behind your house
+and a hangover of a sunset
+hauled itself across our shoulders,
+obscuring everything. This was when
+we thought we knew the difference
+between impulse and instinct,
+when we tallied up our cheap thrills,
+when anything was ours for the taking
+as long as it fit into the crease of palms
+flushed with dirt and asphalt.
+And we listened for hours
+to that slow, heady <a href="https://www.youtube.com/watch?v=lBfMLQZdigE&list=RDlBfMLQZdigE&start_radio=1" target="_blank">music</a>,
+skipped tracks, lied and told on ourselves,
+and at some point we were high enough
+to say what we were thinking out loud
+<em>– the world's so much smaller
+than I thought it would be.</em>` },
+      { title: "midland, texas", body: midlandTexas },
+      { title: "withdrawal", body: `It took me years to learn
+that what we wanted
+was to know each other's pain,
+not be freed from it.
+We spent many nights together
+sick and splayed over my mattress,
+sweat splintering our skin,
+cheeks red like the <a href="coil.jpg" target="_blank">coil</a>
+of our hotplate starting to glow.` },
+      { title: "DUI", body: dui },
+      { title: "cicadas at the end of summer", body: cicadas },
+      { title: "verdict", body: `In the hallway, we crowd together
+like drunk girls in a bathroom stall.
+The heat of being makes us tremble.
+Outside, cars browse a distant road.
+We are waiting to be told
+what we know but won't admit,
+that we are all <a href="https://www.houstontx.gov/police/nr/2020/mar/nr030520-2.htm" target="_blank">complicit</a>.` },
+      { title: "untitled", body: `Like always,
+you turned up two weeks later,
+slack-skinned, scant-lashed,
+your body made <a href="hideous.jpg" target="_blank">hideous</a>
+by morning light
+ministered through the blinds
+onto a comedown scene:
+The dirtied doorstep. The false epiphany.
+The arms raked with abscess.
+I'll say it like this -
+memory's a <a href="bruise.png" target="_blank">bruise</a> you press
+and keep pressing
+to see if it's still there,
+even if it hurts.` },
+      { title: "driving down fondren,", body: fondren },
+      { title: "roadside inn, galveston", body: `Room 223. A palm tree,
+wilted like a closed fist.
+The blistered bodies of lizards
+smashed into concrete.
+A lone voice prowls the courtyard.
+It's so much harder to pay attention.
+Another landscape strains beneath this one
+like bubbles trapped under the <a href="skin.png" target="_blank">skin</a>.
+Now, three days of rain
+and a nimbus of mosquitoes
+packed together so densely
+they have a physical outline,
+almost like a person.
+Another shot to kill the sickness.
+I wish I could feel something
+I didn't have the words for.` },
+      { title: "den", body: `There were four of us
+in that boarded-up house:
+the double murderer, the pimp-
+turned-Catholic, and Cory,
+a boy from the bus stop
+who wandered in and stayed
+too long. We often stayed up
+together, watching movies
+on a pockmarked couch.
+He hid cash for me, curled
+in the soles of his shoes.
+In low tones we whispered
+about life after this, our grand plans,
+the money he was coming in to.
+Promises strung like a hammock
+between us. I hear of Cory now and then –
+his troubles in law, the daughter he's raising –
+scraps I subsist on as I wait
+for my new life to supplant the old,
+speech scabbed over meaning,
+polyps overtaking the lung.` },
+    ];
+
+    function showIndex() {
+      document.getElementById('cover').style.display = 'none';
+      document.getElementById('index').style.display = 'flex';
+      document.getElementById('poem-view').style.display = 'none';
+    }
+
+    function showPoem(i) {
+      document.getElementById('pv-body').innerHTML = poems[i].body;
+      document.getElementById('cover').style.display = 'none';
+      document.getElementById('index').style.display = 'none';
+      document.getElementById('poem-view').style.display = 'block';
+    }
+
+    const ul = document.getElementById('poem-list');
+    ul.innerHTML = poems.map((p, i) => `
+      <li class="poem-item">
+        <a onclick="showPoem(${i})">${p.title}</a>
+      </li>`).join('');
+  </script>
+
+</body>
+</html>
